@@ -1,0 +1,5 @@
+[editor]
+panning=3180,768
+
+[node.1]
+origin=0,0
