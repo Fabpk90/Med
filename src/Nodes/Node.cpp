@@ -28,31 +28,35 @@ Node::Node(std::string_view name, float x, float y)
     ImNodes::SetNodeScreenSpacePos(imguiID, position);
 }
 
-void Node::addInput(std::unique_ptr<Pin> pin)
-{
-    pinsInput.push_back(std::move(pin));
-}
-
-void Node::addOutput(std::unique_ptr<Pin> pin)
-{
-    pinsOutput.push_back(std::move(pin));
-}
-
 void Node::drawPin()
 {
     for (auto& pin : pinsInput)
     {
-        ImNodes::BeginInputAttribute(pin->getID());
-            ImGui::Text("%s", pin->getName().c_str());
-        ImNodes::EndInputAttribute();
+       pin->draw();
     }
 
     for (auto& pin : pinsOutput)
     {
-        ImNodes::BeginOutputAttribute(pin->getID());
-            const float label_width = ImGui::CalcTextSize(name.c_str()).x;
-            ImGui::Indent(80.0f + label_width);
-            ImGui::Text("%s", pin->getName().c_str());
-        ImNodes::EndOutputAttribute();
+       pin->draw();
     }
+}
+
+void Node::addInput(PinType type, std::string_view name, std::shared_ptr<Node> &node)
+{
+    pinsInput.emplace_back(std::move(std::make_unique<Pin>(PinIO::Input, type, name, node)));
+}
+
+void Node::addInput(PinType type, std::string_view name)
+{
+    pinsInput.emplace_back(std::move(std::make_unique<Pin>(PinIO::Input, type, name)));
+}
+
+void Node::addOutput(PinType type, std::string_view name, std::shared_ptr<Node> &node)
+{
+    pinsOutput.emplace_back(std::move(std::make_unique<Pin>(PinIO::Output, type, name, node)));
+}
+
+void Node::addOutput(PinType type, std::string_view name)
+{
+    pinsOutput.emplace_back(std::move(std::make_unique<Pin>(PinIO::Output, type, name)));
 }

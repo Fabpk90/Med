@@ -12,6 +12,7 @@
 #include "Nodes/Node.h"
 #include "Nodes/Math/Add.h"
 #include "Editor/Editor.h"
+#include "Nodes/Color.h"
 #include <vector>
 #include <fstream>
 
@@ -20,7 +21,7 @@ int main() {
     ImGui::CreateContext();
     ImNodes::CreateContext();
 
-    ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+   // ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
     auto* window = glfwCreateWindow(1280, 720, "Material Editor", nullptr, nullptr);
 
@@ -34,7 +35,7 @@ int main() {
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(nullptr);
 
-    Editor editor;
+    Editor editor = Editor(1280, 720);
 
     //check if settings of the editor are present
 
@@ -59,7 +60,6 @@ int main() {
             glfwSetWindowShouldClose(window, true);
         }
 
-
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
@@ -74,9 +74,11 @@ int main() {
         window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
         window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 
+       // ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
+
         ImGui::Begin("node editor", nullptr, window_flags);
 
-        ImGui::Begin("Preview", nullptr);
+        ImGui::Begin("Preview", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
             ImGui::Image(0, ImVec2(256, 256));
         ImGui::End();
 
@@ -110,8 +112,8 @@ int main() {
 
         ImNodes::BeginNodeEditor();
 
-        const bool open_popup = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows)
-                                && ImNodes::IsEditorHovered()
+        const bool open_popup = //ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows)
+                                /*&&*/ ImNodes::IsEditorHovered()
                                 && (glfwGetKey(window, GLFW_KEY_SPACE) || glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT));
 
         if (open_popup)
@@ -134,6 +136,16 @@ int main() {
             if (ImGui::MenuItem("add"))
             {
                 std::shared_ptr<Add> node = std::make_shared<Add>();
+
+                node->setPosition(click_pos);
+                ImNodes::SetNodeScreenSpacePos(node->getID(), click_pos);
+
+                editor.addNode(std::move(node));
+            }
+
+            if (ImGui::MenuItem("color"))
+            {
+                std::shared_ptr<Color> node = std::make_shared<Color>();
 
                 node->setPosition(click_pos);
                 ImNodes::SetNodeScreenSpacePos(node->getID(), click_pos);

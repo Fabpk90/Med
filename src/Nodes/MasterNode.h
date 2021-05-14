@@ -17,7 +17,7 @@ public:
 
     MasterNode(ImVec2 position) : Node("Master Node", position)
     {
-        addInput(std::make_unique<Pin>(PinType::Void ,"Color"));
+        addInput(PinType::Void ,"Color");
     }
 
     void draw() override;

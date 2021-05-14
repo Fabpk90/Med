@@ -21,8 +21,12 @@ private:
     std::vector<std::shared_ptr<Node>> nodes;
     std::vector<std::pair<int, int>> links;
 
+    float windowSizeX;
+    float windowSizeY;
+
 public:
     Editor();
+    Editor(float x, float y);
 
     void draw();
 
@@ -56,6 +60,8 @@ public:
     {
         return nodes[nodeIndex];
     }
+
+    std::pair<float, float> getWindowSize() { return {windowSizeX, windowSizeY}; }
 };
 
 

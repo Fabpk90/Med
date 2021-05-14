@@ -26,10 +26,10 @@ void Add::evaluate()
 
 Add::Add() : Node("Add")
 {
-    addInput(std::move(std::make_unique<Pin>(PinType::Float, "A")));
-    addInput(std::move(std::make_unique<Pin>(PinType::Float, "B")));
+    addInput(PinType::Float, "A");
+    addInput(PinType::Float, "B");
 
-    addOutput(std::move(std::make_unique<Pin>(PinType::Float, "C")));
+    addOutput(PinType::Float, "C");
 }
 
 void Add::connectInput(int index, std::shared_ptr<Node> nodeConnected)

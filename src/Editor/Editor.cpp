@@ -12,6 +12,10 @@ Editor::Editor()
 {
     addNode(std::make_unique<MasterNode>(ImVec2(0, 0)));
 }
+Editor::Editor(float x, float y) : windowSizeX(x), windowSizeY(y)
+{
+    addNode(std::make_unique<MasterNode>(ImVec2(x / 2, y / 2)));
+}
 
 void Editor::draw()
 {
@@ -62,5 +66,4 @@ std::shared_ptr<Node> Editor::getNodeByID(int nodeID)
 
     return nullptr;
 }
-
 

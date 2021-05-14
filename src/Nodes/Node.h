@@ -45,8 +45,11 @@ public:
     virtual void connectInput(int index, std::shared_ptr<Node> nodeConnected) = 0;
     virtual void connectOutput(int index, std::shared_ptr<Node> nodeConnected) = 0;
 
-    void addInput(std::unique_ptr<Pin> pin);
-    void addOutput(std::unique_ptr<Pin> pin);
+    void addInput(PinType type, std::string_view name, std::shared_ptr<Node>& node);
+    void addInput(PinType type, std::string_view name);
+
+    void addOutput(PinType type, std::string_view name, std::shared_ptr<Node>& node);
+    void addOutput(PinType type, std::string_view name);
 
     [[nodiscard]] int getID() const { return imguiID; }
 
