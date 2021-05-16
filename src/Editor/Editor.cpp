@@ -8,13 +8,24 @@
 #include "../Nodes/Node.h"
 #include "../Nodes/MasterNode.h"
 
-Editor::Editor()
-{
-    addNode(std::make_unique<MasterNode>(ImVec2(0, 0)));
-}
-Editor::Editor(float x, float y) : windowSizeX(x), windowSizeY(y)
+Editor* Editor::instance = nullptr;
+
+Editor::Editor(float x, float y) : windowSizeX(x), windowSizeY(y), fb(x, y, true, true)
+, vboQuad(2, 6)
 {
     addNode(std::make_unique<MasterNode>(ImVec2(x / 2, y / 2)));
+
+    vboQuad.setElementDescription(0, Vbo::Element(3)); // position
+    vboQuad.setElementDescription(1, Vbo::Element(2)); // uv
+
+    vboQuad.createCPUSide();
+
+    //projection space
+    vboQuad.setElementData(0, 0, 1, 0, 0);
+    vboQuad.setElementData(1, 0, 1, 0);
+    vboQuad.setElementData(0, 0, 1, 0, 0);
+
+    instance = this;
 }
 
 void Editor::draw()
@@ -67,3 +78,21 @@ std::shared_ptr<Node> Editor::getNodeByID(int nodeID)
     return nullptr;
 }
 
+void Editor::render()
+{
+    fb.bind();
+    glClearColor(0, 0, 0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    vboQuad.bind();
+
+    fb.unBind();
+}
+
+void Editor::reset()
+{
+    nodes.clear();
+    links.clear();
+
+    //reset shader
+}

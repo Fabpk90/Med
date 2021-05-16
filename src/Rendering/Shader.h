@@ -14,6 +14,14 @@
 class Shader
 {
 public:
+    Shader()
+    {
+        vertexProgram = -1;
+        fragProgram = -1;
+
+        path = nullptr;
+        shaderProgram = -1;
+    };
     Shader(const char *path);
 
     void reload();
@@ -42,6 +50,10 @@ public:
 
     GLuint getID() { return shaderProgram; }
 
+    void loadVertex(std::string& code);
+    void loadFrag(std::string& code);
+    void combine();
+
 private:
     void load();
 
@@ -49,6 +61,9 @@ private:
 
     const char *path;
     GLuint shaderProgram;
+
+    GLuint vertexProgram;
+    GLuint fragProgram;
 };
 
 #endif //MATERIALEDITOR_SHADER_H

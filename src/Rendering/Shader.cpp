@@ -219,6 +219,70 @@ void Shader::reloadShaders()
     }
 }
 
+void Shader::loadVertex(std::string &code)
+{
+    int errorCode = 0;
+    vertexProgram = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexProgram, 1, reinterpret_cast<const GLchar *const *>(code.c_str()), nullptr);
+    glCompileShader(vertexProgram);
+
+    glGetShaderiv(vertexProgram, GL_COMPILE_STATUS, &errorCode);
+
+    char infoLog[1024];
+    if (!errorCode)
+    {
+        glGetShaderInfoLog(vertexProgram, 1024, nullptr, infoLog);
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+}
+
+void Shader::loadFrag(std::string &code)
+{
+    int errorCode = 0;
+    fragProgram = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragProgram, 1, reinterpret_cast<const GLchar *const *>(code.c_str()), nullptr);
+    glCompileShader(fragProgram);
+
+    glGetShaderiv(fragProgram, GL_COMPILE_STATUS, &errorCode);
+
+    char infoLog[1024];
+    if (!errorCode)
+    {
+        glGetShaderInfoLog(fragProgram, 1024, nullptr, infoLog);
+        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+}
+
+void Shader::combine()
+{
+    shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertexProgram);
+    glAttachShader(shaderProgram, fragProgram);
+
+    glLinkProgram(shaderProgram);
+    glValidateProgram(shaderProgram);
+
+    int errorCode = 0;
+    char infoLog[1024];
+
+    //checking linking phase
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &errorCode);
+
+    if (!errorCode)
+    {
+        glGetProgramInfoLog(shaderProgram, 1024, nullptr, infoLog);
+        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+    }
+
+    glGetProgramiv(shaderProgram, GL_VALIDATE_STATUS, &errorCode);
+
+    if (!errorCode)
+    {
+        glGetProgramInfoLog(shaderProgram, 1024, nullptr, infoLog);
+        std::cout << "ERROR::SHADER::PROGRAM::VALIDATION_FAILED\n" << infoLog << std::endl;
+    }
+}
+
 
 
 

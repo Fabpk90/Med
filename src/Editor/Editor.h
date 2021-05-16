@@ -12,6 +12,9 @@
 #include <cereal/types/utility.hpp>
 #include <cereal/types/string.hpp>
 #include <cereal/archives/json.hpp>
+#include "../Rendering/Framebuffer.h"
+#include "../Rendering/Vbo.h"
+#include "../Rendering/ShaderTranslator.h"
 
 
 class Node;
@@ -24,11 +27,23 @@ private:
     float windowSizeX;
     float windowSizeY;
 
+    Framebuffer fb;
+    Vbo vboQuad;
+    ShaderTranslator translator;
+
 public:
-    Editor();
+    Editor() = delete;
     Editor(float x, float y);
 
+    Editor(const Editor& cpy) = delete;
+
+    static Editor* instance;
+
     void draw();
+
+    void render();
+
+    Framebuffer& getFB() { return fb; }
 
     template<class Archive>
     void serialize(Archive & archive)
@@ -62,6 +77,8 @@ public:
     }
 
     std::pair<float, float> getWindowSize() { return {windowSizeX, windowSizeY}; }
+
+    void reset();
 };
 
 

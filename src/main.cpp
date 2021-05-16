@@ -16,6 +16,13 @@
 #include <vector>
 #include <fstream>
 
+#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+
+#include "stb/stb_image.h"
+#include "stb/stb_image_write.h"
+#include "Rendering/Framebuffer.h"
+
 int main() {
     glfwInit();
     ImGui::CreateContext();
@@ -49,7 +56,7 @@ int main() {
 
     while(!glfwWindowShouldClose(window))
     {
-        glClearColor(0, 0, 0, 1.0);
+        glClearColor(0, 0, 0, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glfwPollEvents();
 
@@ -62,14 +69,16 @@ int main() {
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
+
+        editor.render();
+
         ImGui::NewFrame();
 
         const ImGuiViewport* viewport = ImGui::GetMainViewport();
         ImGui::SetNextWindowPos(viewport->WorkPos);
         ImGui::SetNextWindowSize(viewport->WorkSize);
         ImGui::SetNextWindowViewport(viewport->ID);
-       // ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-       // ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+
         ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar;
         window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
         window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
@@ -79,12 +88,12 @@ int main() {
         ImGui::Begin("node editor", nullptr, window_flags);
 
         ImGui::Begin("Preview", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
-            ImGui::Image(0, ImVec2(256, 256));
+            ImGui::Image((ImTextureID)(editor.getFB().getColorTexture()), ImVec2(256, 256));
         ImGui::End();
 
         if(ImGui::Button("New"))
         {
-            editor = Editor();
+            editor.reset();
         }
         ImGui::SameLine();
         if(ImGui::Button("Save"))
@@ -104,7 +113,7 @@ int main() {
             std::ifstream s("test.txt");
             cereal::JSONInputArchive iarchive(s); // Create an output archive
 
-            editor = Editor();
+            editor.reset();
             iarchive(CEREAL_NVP(editor)); // Write the data to the archive
 
             std::cout << "Loaded !" << std::endl;
