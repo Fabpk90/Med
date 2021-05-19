@@ -8,3 +8,5 @@ include_directories(${CMAKE_SOURCE_DIR}/external)
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 add_subdirectory(src)
+
+install(FILES $<TARGET_PDB_FILE:${PROJECT_NAME}> DESTINATION bin)

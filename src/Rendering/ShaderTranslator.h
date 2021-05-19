@@ -5,13 +5,17 @@
 #ifndef MATERIALEDITOR_SHADERTRANSLATOR_H
 #define MATERIALEDITOR_SHADERTRANSLATOR_H
 
+
+#include <glslang/SPIRV/Logger.h>
+#include <glslang/SPIRV/SpvBuilder.h>
 #include <glslang/Public/ShaderLang.h>
 
 class ShaderTranslator {
 private:
     glslang::TProgram program;
-    glslang::TShader shaderVertex;
-    glslang::TShader shaderFrag;
+
+    spv::SpvBuildLogger buildLogger;
+    spv::Builder builder;
 
 public:
     ShaderTranslator();

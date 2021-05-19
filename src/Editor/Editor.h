@@ -81,5 +81,4 @@ public:
     void reset();
 };
 
-
 #endif //MATERIALEDITOR_EDITOR_H
