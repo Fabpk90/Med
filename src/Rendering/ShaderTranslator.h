@@ -20,6 +20,8 @@ private:
 public:
     ShaderTranslator();
 
+    spv::Function* main;
+    spv::Block* block;
 };
 
 

@@ -12,7 +12,17 @@ ShaderTranslator::ShaderTranslator() : buildLogger() , builder(spv::SpvVersion::
 
     std::vector<spv::Id>ids = {a,b};
 
-    auto add = builder.createOp(spv::OpIAdd, builder.makeFloatType(16), ids);
+    main = builder.makeEntryPoint("main");
+
+    block = &builder.makeNewBlock();
+
+    auto instruction = std::make_unique<spv::Instruction>(spv::OpIAdd);
+    instruction->addIdOperand(a);
+    instruction->addIdOperand(b);
+
+    block->addInstruction(std::move(instruction));
+
+    main->addBlock(block);
 
     std::vector<unsigned int> dumps;
     builder.dump(dumps);
